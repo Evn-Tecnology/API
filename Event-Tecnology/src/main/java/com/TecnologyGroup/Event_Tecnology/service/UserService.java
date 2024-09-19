@@ -71,6 +71,15 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado con el identificador: " + id));
 
+        DeletedUser deletedUser = new DeletedUser();
+        deletedUser.setUserNombre(user.getUserNombre());
+        deletedUser.setUserApellido(user.getUserApellido());
+        deletedUser.setUserEmail(user.getUserEmail());
+        deletedUser.setUserTelefono(user.getUserTelefono());
+        deletedUser.setDeletedAt(LocalDate.now());
+
+        deletedUserRepository.save(deletedUser);
+
         userRepository.delete(user);
     }
 
