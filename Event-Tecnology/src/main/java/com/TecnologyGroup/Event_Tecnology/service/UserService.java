@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -23,6 +24,18 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final BCryptPasswordEncoder passwordEncoder;
+
+    @Transactional(readOnly = true)
+    public List<UserResponseDTO> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        return userMapper.convertToListDTO(users);
+    }
+    @Transactional(readOnly = true)
+    public UserResponseDTO getUserById(Integer id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado con el identificador: " + id));
+        return userMapper.convertToDTO(user);
+    }
 
     @Transactional
     public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
