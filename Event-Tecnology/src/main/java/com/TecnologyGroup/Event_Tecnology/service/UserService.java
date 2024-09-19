@@ -33,6 +33,7 @@ public class UserService {
 
         String encryptedPassword = passwordEncoder.encode(userRequestDTO.getPassword());
         user.setUserPassword(encryptedPassword);
+        user.setCreateAt(LocalDate.now());
 
         userRepository.save(user);
         return userMapper.convertToDTO(user);

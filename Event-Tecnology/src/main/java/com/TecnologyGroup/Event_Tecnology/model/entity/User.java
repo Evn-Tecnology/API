@@ -36,6 +36,9 @@ public class User {
     @Column(name = "email_verified", nullable = false)
     private boolean emailVerified = false;
 
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDate createAt;
+
     @Column(name = "update_at")
     private LocalDate updateAt;
 }

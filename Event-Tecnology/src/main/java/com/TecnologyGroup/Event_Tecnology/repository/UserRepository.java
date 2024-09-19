@@ -5,6 +5,7 @@ import com.TecnologyGroup.Event_Tecnology.model.entity.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,4 +17,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query("SELECT u FROM User u WHERE u.emailVerified = :verified")
     List<User> findAllWithVerifiedEmail(@Param("verified") boolean verified);
+
+    @Query("SELECT u FROM User u WHERE u.createAt BETWEEN :startDate AND :endDate")
+    List<User> findByRegistrationDateBetween(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 }
