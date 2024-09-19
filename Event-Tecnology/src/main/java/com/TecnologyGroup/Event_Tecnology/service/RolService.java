@@ -20,6 +20,13 @@ public class RolService {
 
     private final RolRepository rolRepository;
     private final RolMapper rolMapper;
+    private final UserRepository userRepository;
+
+    @Transactional(readOnly = true)
+    public Rol getRolByName(String rolNombre) {
+        return rolRepository.findByNombreRol(rolNombre)
+                .orElseThrow(() -> new EntityNotFoundException("Rol no encontrado con nombre: " + rolNombre));
+    }
 
     @Transactional
     public RolResponseDTO createRol(RolRequestDTO rolRequestDTO) {

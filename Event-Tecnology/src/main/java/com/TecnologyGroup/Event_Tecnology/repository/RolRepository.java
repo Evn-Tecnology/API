@@ -1,7 +1,7 @@
 package com.TecnologyGroup.Event_Tecnology.repository;
 
-import com.TecnologyGroup.Event_Tecnology.model.entity.Rol;
 import org.springframework.data.jpa.repository.JpaRepository;
+import com.TecnologyGroup.Event_Tecnology.model.entity.Rol;
 
 import java.util.Optional;
 
