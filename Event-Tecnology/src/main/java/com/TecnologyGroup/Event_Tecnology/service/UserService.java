@@ -7,8 +7,10 @@ import com.TecnologyGroup.Event_Tecnology.mapper.UserMapper;
 import com.TecnologyGroup.Event_Tecnology.model.dto.UserRequestDTO;
 import com.TecnologyGroup.Event_Tecnology.model.dto.UserResponseDTO;
 import com.TecnologyGroup.Event_Tecnology.model.entity.DeletedUser;
+import com.TecnologyGroup.Event_Tecnology.model.entity.Rol;
 import com.TecnologyGroup.Event_Tecnology.model.entity.User;
 import com.TecnologyGroup.Event_Tecnology.repository.DeletedUserRepository;
+import com.TecnologyGroup.Event_Tecnology.repository.RolRepository;
 import com.TecnologyGroup.Event_Tecnology.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -24,6 +26,7 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final RolRepository rolRepository;
     private final DeletedUserRepository deletedUserRepository;
     private final UserMapper userMapper;
     private final BCryptPasswordEncoder passwordEncoder;
@@ -33,6 +36,7 @@ public class UserService {
         List<User> users = userRepository.findAll();
         return userMapper.convertToListDTO(users);
     }
+
     @Transactional(readOnly = true)
     public UserResponseDTO getUserById(Integer id) {
         User user = userRepository.findById(id)
@@ -46,9 +50,11 @@ public class UserService {
             throw new UserAlreadyExistsException("Ya existe un usuario con el correo: " + userRequestDTO.getEmail());
         }
         User user = userMapper.convertToEntity(userRequestDTO);
-
+        Rol defaultRole = rolRepository.findByNombreRol("UsuarioNv")
+                .orElseThrow(() -> new EntityNotFoundException("El rol 'UsuarioNv' no fue encontrado"));
         String encryptedPassword = passwordEncoder.encode(userRequestDTO.getPassword());
         user.setUserPassword(encryptedPassword);
+        user.setRol(defaultRole);
         user.setCreateAt(LocalDate.now());
 
         userRepository.save(user);
@@ -87,6 +93,12 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
+    public List<UserResponseDTO> getUsersByRole(String rolNombre) {
+        List<User> users = userRepository.findByRol(rolNombre);
+        return userMapper.convertToListDTO(users);
+    }
+
+    @Transactional(readOnly = true)
     public List<UserResponseDTO> getUsersWithVerifiedEmail(boolean verified) {
         List<User> users = userRepository.findAllWithVerifiedEmail(verified);
         return userMapper.convertToListDTO(users);
@@ -112,5 +124,4 @@ public class UserService {
         user.setUserPassword(encryptedPassword);
         userRepository.save(user);
     }
-
 }
