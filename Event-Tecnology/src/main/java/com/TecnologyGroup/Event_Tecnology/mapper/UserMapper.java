@@ -14,13 +14,18 @@ import java.util.List;
 public class UserMapper {
 
     private final ModelMapper modelMapper;
+    private final DetailUserMapper detailUserMapper;
 
     public User convertToEntity(UserRequestDTO userRequestDTO){
         return modelMapper.map(userRequestDTO, User.class);
     }
 
     public UserResponseDTO convertToDTO(User user) {
-        return modelMapper.map(user, UserResponseDTO.class);
+        UserResponseDTO dto = modelMapper.map(user, UserResponseDTO.class);
+        if (user.getUserDetail() != null) {
+            dto.setDetailUser(detailUserMapper.convertToDTO(user.getUserDetail()));
+        }
+        return dto;
     }
 
     public List<UserResponseDTO> convertToListDTO(List<User> users){
