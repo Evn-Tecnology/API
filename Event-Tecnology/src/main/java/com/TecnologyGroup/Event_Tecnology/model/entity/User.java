@@ -51,6 +51,10 @@ public class User {
     @Column(name = "update_at")
     private LocalDate updateAt;
 
+    @ManyToOne
+    @JoinColumn(name = "rol_id", nullable = false)
+    private Rol rol;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_detail_id")
     private DetailUser userDetail;

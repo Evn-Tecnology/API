@@ -18,6 +18,9 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("SELECT u FROM User u WHERE u.emailVerified = :verified")
     List<User> findAllWithVerifiedEmail(@Param("verified") boolean verified);
 
+    @Query("SELECT u FROM User u WHERE u.rol.nombreRol = :rolNombre")
+    List<User> findByRol(@Param("rolNombre") String rolNombre);
+
     @Query("SELECT u FROM User u WHERE u.createAt BETWEEN :startDate AND :endDate")
     List<User> findByRegistrationDateBetween(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 }
