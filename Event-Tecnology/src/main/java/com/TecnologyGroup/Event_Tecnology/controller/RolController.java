@@ -17,6 +17,18 @@ import java.util.List;
 public class RolController {
     private final RolService rolService;
 
+    @GetMapping
+    public ResponseEntity<List<RolResponseDTO>> getAllRoles() {
+        List<RolResponseDTO> roles = rolService.getAllRoles();
+        return new ResponseEntity<>(roles, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<RolResponseDTO> getRolById(@PathVariable Integer id) {
+        RolResponseDTO rol = rolService.getRolById(id);
+        return new ResponseEntity<>(rol, HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<RolResponseDTO> createUser(@Valid @RequestBody RolRequestDTO RequestDTO) {
         RolResponseDTO createdRol = rolService.createRol(RequestDTO);

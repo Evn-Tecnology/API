@@ -23,6 +23,19 @@ public class RolService {
     private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
+    public List<RolResponseDTO> getAllRoles() {
+        List<Rol> roles = rolRepository.findAll();
+        return rolMapper.convertToListDTO(roles);
+    }
+
+    @Transactional(readOnly = true)
+    public RolResponseDTO getRolById(Integer id) {
+        Rol rol = rolRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Rol no encontrado con el identificador: " + id));
+        return rolMapper.convertToDTO(rol);
+    }
+
+    @Transactional(readOnly = true)
     public Rol getRolByName(String rolNombre) {
         return rolRepository.findByNombreRol(rolNombre)
                 .orElseThrow(() -> new EntityNotFoundException("Rol no encontrado con nombre: " + rolNombre));
