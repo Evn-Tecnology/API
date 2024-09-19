@@ -6,7 +6,9 @@ import com.TecnologyGroup.Event_Tecnology.exception.UserNotFoundException;
 import com.TecnologyGroup.Event_Tecnology.mapper.UserMapper;
 import com.TecnologyGroup.Event_Tecnology.model.dto.UserRequestDTO;
 import com.TecnologyGroup.Event_Tecnology.model.dto.UserResponseDTO;
+import com.TecnologyGroup.Event_Tecnology.model.entity.DeletedUser;
 import com.TecnologyGroup.Event_Tecnology.model.entity.User;
+import com.TecnologyGroup.Event_Tecnology.repository.DeletedUserRepository;
 import com.TecnologyGroup.Event_Tecnology.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -22,6 +24,7 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final DeletedUserRepository deletedUserRepository;
     private final UserMapper userMapper;
     private final BCryptPasswordEncoder passwordEncoder;
 
@@ -81,6 +84,18 @@ public class UserService {
         deletedUserRepository.save(deletedUser);
 
         userRepository.delete(user);
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserResponseDTO> getUsersWithVerifiedEmail(boolean verified) {
+        List<User> users = userRepository.findAllWithVerifiedEmail(verified);
+        return userMapper.convertToListDTO(users);
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserResponseDTO> getUsersByRegistrationDateRange(LocalDate startDate, LocalDate endDate) {
+        List<User> users = userRepository.findByRegistrationDateBetween(startDate, endDate);
+        return userMapper.convertToListDTO(users);
     }
 
     @Transactional
