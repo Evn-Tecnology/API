@@ -24,11 +24,11 @@ public class UserRequestDTO {
     @Email(message = "El correo debe ser válido")
     private String email;
 
-    @Pattern(regexp = "^[+]?[0-9][\\s\\-()][0-9]+$", message = "El número de teléfono puede contener solo dígitos, espacios, guiones, paréntesis y un signo '+' opcional")
+    @Pattern(regexp = "^[+]?[0-9]*[\\s\\-()]*[0-9]+$", message = "El número de teléfono puede contener solo dígitos, espacios, guiones, paréntesis y un signo '+' opcional")
     private String telefono;
 
     @NotBlank(message = "la contraseña no puede ser vacío")
     @Size(min = 8, max = 20, message = "La contraseña debe tener entre 8 y 20 caracteres")
-    @Pattern(regexp = "^(?=.[0-9])(?=.[a-z])(?=.[A-Z])(?=.[!@#$%^&+=]).*$", message = "La contraseña debe contener al menos un número, una letra minúscula, una letra mayúscula y un carácter especial")
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&+=]).*$", message = "La contraseña debe contener al menos un número, una letra minúscula, una letra mayúscula y un carácter especial")
     private String password;
 }
