@@ -25,6 +25,7 @@ public class UserMapper {
         if (user.getUserDetail() != null) {
             dto.setDetailUser(detailUserMapper.convertToDTO(user.getUserDetail()));
         }
+        dto.setEstado(user.isDeleted() ? "Eliminado" : "Activo");
         return dto;
     }
 

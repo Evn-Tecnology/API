@@ -40,8 +40,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(UserDeletionException.class)
-    public ResponseEntity<CustomErrorResponse> handleUserDeletionException(UserDeletionException ex, WebRequest request) {
+    // Unificar excepciones de eliminación en un solo manejador
+    @ExceptionHandler({UserDeletionException.class, UserDeletedException.class})
+    public ResponseEntity<CustomErrorResponse> handleUserDeletionException(RuntimeException ex, WebRequest request) {
         CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(err, HttpStatus.CONFLICT);
     }
@@ -52,16 +53,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(err, HttpStatus.FORBIDDEN);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<CustomErrorResponse> handleGenericException(Exception ex, WebRequest request) {
-        CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
-        return new ResponseEntity<>(err, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
     @ExceptionHandler(IncorrectPasswordException.class)
     public ResponseEntity<CustomErrorResponse> handleIncorrectPasswordException(IncorrectPasswordException ex, WebRequest request) {
         CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<CustomErrorResponse> handleGenericException(Exception ex, WebRequest request) {
+        CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(err, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Override
@@ -69,7 +70,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         String msg = ex.getBindingResult().getFieldErrors().stream()
                 .map(e -> e.getField().concat(":").concat(e.getDefaultMessage()))
                 .collect(Collectors.joining(","));
-
 
         CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(), msg, request.getDescription(false));
         return new ResponseEntity<>(err, HttpStatus.UNPROCESSABLE_ENTITY);

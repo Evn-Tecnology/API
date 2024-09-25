@@ -51,6 +51,12 @@ public class User {
     @Column(name = "update_at")
     private LocalDate updateAt;
 
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
+
+    @Column(name = "deleted_at")
+    private LocalDate deletedAt;
+
     @ManyToOne
     @JoinColumn(name = "rol_id", nullable = false)
     private Rol rol;

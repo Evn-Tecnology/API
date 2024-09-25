@@ -13,6 +13,7 @@ public class UserResponseDTO {
     private String apellido;
     private String email;
     private String telefono;
+    private String estado;
     private String rol;
     private DetailUserResponseDTO detailUser;
     private boolean emailVerified;
