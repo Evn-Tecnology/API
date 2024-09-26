@@ -40,9 +40,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
     }
 
-    // Unificar excepciones de eliminación en un solo manejador
-    @ExceptionHandler({UserDeletionException.class, UserDeletedException.class})
-    public ResponseEntity<CustomErrorResponse> handleUserDeletionException(RuntimeException ex, WebRequest request) {
+    @ExceptionHandler(UserDeletedException.class)
+    public ResponseEntity<CustomErrorResponse> handleUserDeletedException(UserDeletedException ex, WebRequest request) {
         CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(err, HttpStatus.CONFLICT);
     }

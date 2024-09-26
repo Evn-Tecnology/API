@@ -65,16 +65,8 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Integer id) {
-        try {
-            userService.deleteUser(id);
-            return ResponseEntity.ok("Usuario eliminado correctamente.");
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado con el ID: " + id);
-        } catch (UserDeletedException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("El usuario ya está eliminado.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocurrió un error al eliminar el usuario.");
-        }
+        userService.deleteUser(id);
+        return ResponseEntity.ok("Usuario eliminado correctamente.");
     }
 
 }
