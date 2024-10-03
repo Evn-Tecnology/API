@@ -61,7 +61,7 @@ public class User {
     @JoinColumn(name = "rol_id", nullable = false)
     private Rol rol;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "user_detail_id")
     private DetailUser userDetail;
 }

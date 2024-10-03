@@ -28,6 +28,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(err, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(DetailUserAlreadyExistsException.class)
+    public ResponseEntity<CustomErrorResponse> handleDetailUserAlreadyExistsException(DetailUserAlreadyExistsException ex, WebRequest request) {
+        CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(err, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(EdadAlreadyAsignedException.class)
+    public ResponseEntity<CustomErrorResponse> handleEdadAlreadyAsignedException(EdadAlreadyAsignedException ex, WebRequest request) {
+        CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(err, HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(InvalidUserCredentialsException.class)
     public ResponseEntity<CustomErrorResponse> handleInvalidUserCredentialsException(InvalidUserCredentialsException ex, WebRequest request) {
         CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
@@ -56,6 +68,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<CustomErrorResponse> handleIncorrectPasswordException(IncorrectPasswordException ex, WebRequest request) {
         CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidUserRoleException.class)
+    public ResponseEntity<CustomErrorResponse> handleInvalidUserRoleException(InvalidUserRoleException ex, WebRequest request) {
+        CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(err, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(InvalidEdadException.class)
+    public ResponseEntity<CustomErrorResponse> handleInvalidEdadException(InvalidEdadException ex, WebRequest request) {
+        CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(err, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(Exception.class)

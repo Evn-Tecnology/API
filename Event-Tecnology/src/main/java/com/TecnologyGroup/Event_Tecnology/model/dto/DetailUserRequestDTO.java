@@ -1,9 +1,6 @@
 package com.TecnologyGroup.Event_Tecnology.model.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,15 +18,14 @@ public class DetailUserRequestDTO {
     )
     private String urlLinkedIn;
 
-    @NotNull(message = "La edad es obligatoria")
+    @Size(min = 1, max = 100, message = "La edad debe estar entre 1 y 100")
+    @Min(value = 0, message = "La edad no puede ser negativa")
     private int edad;
 
-    @NotBlank(message = "El genero no puede ser vacío")
-    @Size(min = 5, message = "El nombre debe tener al menos 5 caracteres")
+    @Size(min = 5, message = "El género debe tener al menos 5 caracteres")
     private String genero;
 
-    @NotBlank(message = "El pais no puede ser vacío")
-    @Size(min = 2, message = "El nombre debe tener al menos 2 caracteres")
+    @Size(min = 2, message = "El país debe tener al menos 2 caracteres")
     private String pais;
 
     private List<String> interesesTecnologicos;

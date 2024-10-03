@@ -1,6 +1,10 @@
 package com.TecnologyGroup.Event_Tecnology.service;
 
+import com.TecnologyGroup.Event_Tecnology.mapper.HabilidadMapper;
+import com.TecnologyGroup.Event_Tecnology.model.dto.*;
 import com.TecnologyGroup.Event_Tecnology.model.entity.Habilidad;
+import com.TecnologyGroup.Event_Tecnology.model.entity.Rol;
+import com.TecnologyGroup.Event_Tecnology.model.entity.User;
 import com.TecnologyGroup.Event_Tecnology.repository.HabilidadRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,18 +19,28 @@ import java.util.List;
 public class HabilidadService {
 
     private final HabilidadRepository habilidadRepository;
+    private final HabilidadMapper habilidadMapper;
 
     @Transactional(readOnly = true)
-    public List<Habilidad> getAllHabilidades() {
-        return habilidadRepository.findAll();
+    public List<HabilidadResponseDTO> getAllHabilidades() {
+        List<Habilidad> habilidades = habilidadRepository.findAll();
+        return habilidadMapper.convertToListDTO(habilidades);
+    }
+
+    public HabilidadResponseDTO getHabiliadadById(Integer id) {
+        Habilidad habilidad = habilidadRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Habilidad no encontrada con el identificador: " + id));
+        return habilidadMapper.convertToDTO(habilidad);
     }
 
     @Transactional
-    public Habilidad createHabilidad(Habilidad habilidad) {
-        if (habilidadRepository.existsByHabilidadNombre(habilidad.getHabilidadNombre())) {
+    public HabilidadResponseDTO createHabilidad(HabilidadRequestDTO habilidadRequestDTO) {
+        if (habilidadRepository.existsByHabilidadNombre(habilidadRequestDTO.getHabilidadNombre())) {
             throw new EntityExistsException("La habilidad ya existe");
         }
-        return habilidadRepository.save(habilidad);
+        Habilidad habilidad = habilidadMapper.convertToEntity(habilidadRequestDTO);
+        habilidadRepository.save(habilidad);
+        return habilidadMapper.convertToDTO(habilidad);
     }
 
     @Transactional(readOnly = true)
@@ -36,17 +50,16 @@ public class HabilidadService {
     }
 
     @Transactional
-    public Habilidad updateHabilidad(Integer id, Habilidad habilidadActualizada) {
+    public HabilidadResponseDTO updateHabilidad(Integer id, HabilidadRequestDTO habilidadRequestDTO) {
         Habilidad habilidad = habilidadRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Habilidad no encontrada con el identificador: " + id));
 
-        if (habilidadRepository.existsByHabilidadNombre(habilidadActualizada.getHabilidadNombre())) {
-            throw new EntityExistsException("La habilidad ya existe con ese nombre");
-        }
+        habilidad.setHabilidadNombre(habilidadRequestDTO.getHabilidadNombre());
 
-        habilidad.setHabilidadNombre(habilidadActualizada.getHabilidadNombre());
-        return habilidadRepository.save(habilidad);
+        habilidad = habilidadRepository.save(habilidad);
+        return habilidadMapper.convertToDTO(habilidad);
     }
+
 
     @Transactional
     public void deleteHabilidad(Integer id) {

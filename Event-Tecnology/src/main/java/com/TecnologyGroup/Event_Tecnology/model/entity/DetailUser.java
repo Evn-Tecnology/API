@@ -29,7 +29,7 @@ public class DetailUser {
     private String urlLinkedIn;
 
     @Column(name = "edad", updatable = false)
-    private int edad;
+    private int edad = 0;
 
     @Column(name = "genero")
     private String genero;

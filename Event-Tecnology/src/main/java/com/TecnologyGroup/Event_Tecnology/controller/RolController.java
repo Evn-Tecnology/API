@@ -30,20 +30,20 @@ public class RolController {
     }
 
     @PostMapping
-    public ResponseEntity<RolResponseDTO> createUser(@Valid @RequestBody RolRequestDTO RequestDTO) {
+    public ResponseEntity<RolResponseDTO> createRol(@Valid @RequestBody RolRequestDTO RequestDTO) {
         RolResponseDTO createdRol = rolService.createRol(RequestDTO);
         return new ResponseEntity<>(createdRol, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RolResponseDTO> updateUser(@PathVariable Integer id, @Valid @RequestBody RolRequestDTO requestDTO) {
+    public ResponseEntity<RolResponseDTO> updateRol(@PathVariable Integer id, @Valid @RequestBody RolRequestDTO requestDTO) {
         RolResponseDTO rol = rolService.updateRol(id, requestDTO);
         return new ResponseEntity<>(rol, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<RolResponseDTO> deleteUser(@PathVariable Integer id) {
+    public ResponseEntity<String> deleteRol(@PathVariable Integer id) {
         rolService.deleteRol(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.ok("Rol eliminado correctmente.");
     }
 }
