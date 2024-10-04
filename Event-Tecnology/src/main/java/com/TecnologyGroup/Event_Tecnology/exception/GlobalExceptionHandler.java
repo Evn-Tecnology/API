@@ -28,6 +28,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(err, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(DetailUserAlreadyExistsException.class)
+    public ResponseEntity<CustomErrorResponse> handleDetailUserAlreadyExistsException(DetailUserAlreadyExistsException ex, WebRequest request) {
+        CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(err, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(EdadAlreadyAsignedException.class)
+    public ResponseEntity<CustomErrorResponse> handleEdadAlreadyAsignedException(EdadAlreadyAsignedException ex, WebRequest request) {
+        CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(err, HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(InvalidUserCredentialsException.class)
     public ResponseEntity<CustomErrorResponse> handleInvalidUserCredentialsException(InvalidUserCredentialsException ex, WebRequest request) {
         CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
@@ -40,8 +52,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(UserDeletionException.class)
-    public ResponseEntity<CustomErrorResponse> handleUserDeletionException(UserDeletionException ex, WebRequest request) {
+    @ExceptionHandler(UserDeletedException.class)
+    public ResponseEntity<CustomErrorResponse> handleUserDeletedException(UserDeletedException ex, WebRequest request) {
         CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(err, HttpStatus.CONFLICT);
     }
@@ -52,16 +64,58 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(err, HttpStatus.FORBIDDEN);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<CustomErrorResponse> handleGenericException(Exception ex, WebRequest request) {
-        CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
-        return new ResponseEntity<>(err, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
     @ExceptionHandler(IncorrectPasswordException.class)
     public ResponseEntity<CustomErrorResponse> handleIncorrectPasswordException(IncorrectPasswordException ex, WebRequest request) {
         CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidUserRoleException.class)
+    public ResponseEntity<CustomErrorResponse> handleInvalidUserRoleException(InvalidUserRoleException ex, WebRequest request) {
+        CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(err, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(InvalidEdadException.class)
+    public ResponseEntity<CustomErrorResponse> handleInvalidEdadException(InvalidEdadException ex, WebRequest request) {
+        CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(err, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(EventNotFoundException.class)
+    public ResponseEntity<CustomErrorResponse> handleEventNotFoundException(EventNotFoundException ex, WebRequest request) {
+        CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(InscripcionNotFoundException.class)
+    public ResponseEntity<CustomErrorResponse> handleInscripcionNotFoundException(InscripcionNotFoundException ex, WebRequest request) {
+        CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(PagoNotFoundException.class)
+    public ResponseEntity<CustomErrorResponse> handlePagoNotFoundException(PagoNotFoundException ex, WebRequest request) {
+        CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ResenaNotFoundException.class)
+    public ResponseEntity<CustomErrorResponse> handleResenaNotFoundException(ResenaNotFoundException ex, WebRequest request) {
+        CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NotificacionNotFoundException.class)
+    public ResponseEntity<CustomErrorResponse> handleNotificacionNotFoundException(NotificacionNotFoundException ex, WebRequest request) {
+        CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<CustomErrorResponse> handleGenericException(Exception ex, WebRequest request) {
+        CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(err, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Override
@@ -69,7 +123,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         String msg = ex.getBindingResult().getFieldErrors().stream()
                 .map(e -> e.getField().concat(":").concat(e.getDefaultMessage()))
                 .collect(Collectors.joining(","));
-
 
         CustomErrorResponse err = new CustomErrorResponse(LocalDateTime.now(), msg, request.getDescription(false));
         return new ResponseEntity<>(err, HttpStatus.UNPROCESSABLE_ENTITY);

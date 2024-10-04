@@ -11,16 +11,22 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-    Optional<User> findByUserEmail(String email);
+    @Query("SELECT u FROM User u WHERE u.userEmail = :email")
+    Optional<User> findAnyUserByEmail(@Param("email") String email);
 
-    boolean existsByUserEmail(String email);
+    @Query("SELECT u FROM User u WHERE u.estado = 'ACTIVO'")
+    List<User> findAllActiveUsers();
 
-    @Query("SELECT u FROM User u WHERE u.emailVerified = :verified")
+    @Query("SELECT u FROM User u WHERE u.emailVerified = :verified AND u.estado = 'ACTIVO'")
     List<User> findAllWithVerifiedEmail(@Param("verified") boolean verified);
 
-    @Query("SELECT u FROM User u WHERE u.rol.nombreRol = :rolNombre")
+    @Query("SELECT u FROM User u WHERE u.rol.nombreRol = :rolNombre AND u.estado = 'ACTIVO'")
     List<User> findByRol(@Param("rolNombre") String rolNombre);
 
-    @Query("SELECT u FROM User u WHERE u.createAt BETWEEN :startDate AND :endDate")
+    @Query("SELECT u FROM User u WHERE u.createAt BETWEEN :startDate AND :endDate AND u.estado = 'ACTIVO'")
     List<User> findByRegistrationDateBetween(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    @Query("SELECT u FROM User u WHERE u.estado = 'ELIMINADO'")
+    List<User> findAllDeletedUsers();
+
 }
