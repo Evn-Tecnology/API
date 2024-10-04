@@ -111,7 +111,7 @@ public class UserService {
     }
 
     @Transactional
-    public void updatePassword(Integer id, String currentPassword, String newPassword) {
+    public void recoveryPassword(Integer id, String currentPassword, String newPassword) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado con el identificador: " + id));
 
