@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @AllArgsConstructor
 public class HabilidadMapper {
@@ -21,4 +23,9 @@ public class HabilidadMapper {
         return modelMapper.map(habilidad, HabilidadResponseDTO.class);
     }
 
+    public List<HabilidadResponseDTO> convertToListDTO(List<Habilidad> habilidades){
+        return habilidades.stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
 }

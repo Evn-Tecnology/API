@@ -4,5 +4,4 @@ public enum EstadoEvento {
     PLANIFICADO,
     EN_PROGRESO,
     CULMINADO
-
 }

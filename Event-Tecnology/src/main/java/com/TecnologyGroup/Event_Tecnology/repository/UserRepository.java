@@ -1,7 +1,7 @@
 package com.TecnologyGroup.Event_Tecnology.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import com.TecnologyGroup.Event_Tecnology.model.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 

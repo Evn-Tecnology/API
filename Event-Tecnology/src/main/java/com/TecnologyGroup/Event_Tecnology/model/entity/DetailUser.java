@@ -1,10 +1,11 @@
 package com.TecnologyGroup.Event_Tecnology.model.entity;
 
 import jakarta.persistence.*;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -29,7 +30,7 @@ public class DetailUser {
     private String urlLinkedIn;
 
     @Column(name = "edad", updatable = false)
-    private int edad;
+    private int edad = 0;
 
     @Column(name = "genero")
     private String genero;

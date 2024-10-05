@@ -1,8 +1,7 @@
 package com.TecnologyGroup.Event_Tecnology.model.enums;
 
-public enum EstadoInscripcion {
+public enum EstadoResena {
     PENDIENTE,
-    CONFIRMADA,
-    CANCELADA,
+    APROBADA,
     RECHAZADA
 }

@@ -16,21 +16,26 @@ public class UserMapper {
     private final ModelMapper modelMapper;
     private final DetailUserMapper detailUserMapper;
 
-    public User convertToEntity(UserRequestDTO userRequestDTO){
+    public User convertToEntity(UserRequestDTO userRequestDTO) {
         return modelMapper.map(userRequestDTO, User.class);
     }
 
     public UserResponseDTO convertToDTO(User user) {
         UserResponseDTO dto = modelMapper.map(user, UserResponseDTO.class);
+
         if (user.getUserDetail() != null) {
             dto.setDetailUser(detailUserMapper.convertToDTO(user.getUserDetail()));
         }
+
+        dto.setEstado(user.getEstado().toString());
+
         return dto;
     }
 
-    public List<UserResponseDTO> convertToListDTO(List<User> users){
+    public List<UserResponseDTO> convertToListDTO(List<User> users) {
         return users.stream()
                 .map(this::convertToDTO)
                 .toList();
     }
 }
+

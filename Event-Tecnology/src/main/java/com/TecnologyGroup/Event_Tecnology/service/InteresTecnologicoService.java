@@ -1,5 +1,8 @@
 package com.TecnologyGroup.Event_Tecnology.service;
 
+import com.TecnologyGroup.Event_Tecnology.mapper.InteresTecnologicoMapper;
+import com.TecnologyGroup.Event_Tecnology.model.dto.InteresTecnologicoRequestDTO;
+import com.TecnologyGroup.Event_Tecnology.model.dto.InteresTecnologicoResponseDTO;
 import com.TecnologyGroup.Event_Tecnology.model.entity.InteresTecnologico;
 import com.TecnologyGroup.Event_Tecnology.repository.InteresTecnologicoRepository;
 import jakarta.persistence.EntityExistsException;
@@ -15,18 +18,29 @@ import java.util.List;
 public class InteresTecnologicoService {
 
     private final InteresTecnologicoRepository interesTecnologicoRepository;
+    private final InteresTecnologicoMapper interesTecnologicoMapper;
 
     @Transactional(readOnly = true)
-    public List<InteresTecnologico> getAllInteresesTecnologicos() {
-        return interesTecnologicoRepository.findAll();
+    public List<InteresTecnologicoResponseDTO> getAllInteresesTecnologicos() {
+        List<InteresTecnologico> interesTecnologicos = interesTecnologicoRepository.findAll();
+        return interesTecnologicoMapper.convertToListDTO(interesTecnologicos);
+    }
+
+    @Transactional(readOnly = true)
+    public InteresTecnologicoResponseDTO getInteresById(Integer id) {
+        InteresTecnologico interesTecnologico = interesTecnologicoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Interes tecnologico no encontrado con el identificador: " + id));
+        return interesTecnologicoMapper.convertToDTO(interesTecnologico);
     }
 
     @Transactional
-    public InteresTecnologico createInteresTecnologico(InteresTecnologico interesTecnologico) {
-        if (interesTecnologicoRepository.existsByInteresTecNombre(interesTecnologico.getInteresTecNombre())) {
+    public InteresTecnologicoResponseDTO createInteresTecnologico(InteresTecnologicoRequestDTO interesTecnologicoRequestDTO) {
+        if (interesTecnologicoRepository.existsByInteresTecNombre(interesTecnologicoRequestDTO.getInteresTecnologicoNombre())) {
             throw new EntityExistsException("El interés tecnológico ya existe");
         }
-        return interesTecnologicoRepository.save(interesTecnologico);
+        InteresTecnologico interesTecnologico = interesTecnologicoMapper.convertToEntity(interesTecnologicoRequestDTO);
+        interesTecnologicoRepository.save(interesTecnologico);
+        return interesTecnologicoMapper.convertToDTO(interesTecnologico);
     }
 
     @Transactional(readOnly = true)
@@ -36,16 +50,14 @@ public class InteresTecnologicoService {
     }
 
     @Transactional
-    public InteresTecnologico updateInteresTecnologico(Integer id, InteresTecnologico interesTecnologicoActualizado) {
+    public InteresTecnologicoResponseDTO updateInteresTecnologico(Integer id, InteresTecnologicoRequestDTO interesTecnologicoRequestDTO) {
         InteresTecnologico interesTecnologico = interesTecnologicoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Interés tecnológico no encontrado con el identificador: " + id));
 
-        if (interesTecnologicoRepository.existsByInteresTecNombre(interesTecnologicoActualizado.getInteresTecNombre())) {
-            throw new EntityExistsException("El interés tecnológico ya existe con ese nombre");
-        }
+        interesTecnologico.setInteresTecNombre(interesTecnologicoRequestDTO.getInteresTecnologicoNombre());
 
-        interesTecnologico.setInteresTecNombre(interesTecnologicoActualizado.getInteresTecNombre());
-        return interesTecnologicoRepository.save(interesTecnologico);
+        interesTecnologico = interesTecnologicoRepository.save(interesTecnologico);
+        return interesTecnologicoMapper.convertToDTO(interesTecnologico);
     }
 
     @Transactional
