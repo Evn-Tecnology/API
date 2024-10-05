@@ -14,17 +14,16 @@ import lombok.NoArgsConstructor;
 public class NotificacionRequestDTO {
 
     @NotNull
-    private Integer userId;  // ID del usuario que recibirá la notificación
+    private Integer userId;
 
     @NotBlank
-    private String mensaje;  // Mensaje de la notificación
+    private String mensaje;
 
     @NotNull
-    private TipoNotificacion tipo;  // Tipo de notificación (evento, sistema, pago, etc.)
+    private TipoNotificacion tipo;
 
-    // Si la notificación está relacionada con un evento, puede incluirse el ID del evento
-    private Integer eventId;  // ID opcional del evento relacionado (si aplica)
+    private Integer eventId;
 
     @NotNull
-    private EstadoNotificacion estado;  // Estado de la notificación (LEIDA, NO_LEIDA)
+    private EstadoNotificacion estado;
 }

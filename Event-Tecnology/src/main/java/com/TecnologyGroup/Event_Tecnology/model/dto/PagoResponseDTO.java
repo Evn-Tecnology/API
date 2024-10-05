@@ -13,11 +13,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PagoResponseDTO {
 
-    private Integer id;  // ID del pago
-    private Integer userId;  // ID del usuario que realizó el pago
-    private String userNombre;  // Nombre del usuario
-    private Integer eventId;  // ID del evento asociado al pago
-    private String eventNombre;  // Nombre del evento
+    private Integer id;
+    private Integer userId;
+    private String userNombre;
+    private Integer eventId;
+    private String eventNombre;
     private BigDecimal monto;
     private MetodoPago metodoPago;
     private LocalDateTime fechaPago;
