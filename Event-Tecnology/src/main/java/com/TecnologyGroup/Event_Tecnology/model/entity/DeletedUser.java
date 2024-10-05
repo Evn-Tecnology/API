@@ -33,3 +33,5 @@ public class DeletedUser {
     @Column(name = "deleted_at", nullable = false)
     private LocalDate deletedAt;
 }
+
+
