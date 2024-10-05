@@ -6,4 +6,5 @@ public enum CategoriaEvento {
     WEBINAR,
     HACKATHON
 
+
 }
