@@ -7,3 +7,8 @@ public enum EstadoInscripcion {
     RECHAZADA
 
 }
+
+
+
+
+
