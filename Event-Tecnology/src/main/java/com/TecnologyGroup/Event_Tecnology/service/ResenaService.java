@@ -28,7 +28,6 @@ public class ResenaService {
     private final UserRepository userRepository;
     private final ResenaMapper resenaMapper;
 
-    // Crear una nueva reseña
     @Transactional
     public ResenaResponseDTO crearResena(ResenaRequestDTO resenaRequestDTO) {
         Event event = obtenerEventoPorId(resenaRequestDTO.getEventId());
@@ -38,13 +37,12 @@ public class ResenaService {
         resena.setEvento(event);
         resena.setUsuario(user);
         resena.setFechaPublicacion(LocalDateTime.now());
-        resena.setEstado(EstadoResena.PENDIENTE);  // Estado inicial
+        resena.setEstado(EstadoResena.PENDIENTE);
 
         Resena nuevaResena = resenaRepository.save(resena);
         return resenaMapper.convertToDTO(nuevaResena);
     }
 
-    // Actualizar una reseña
     @Transactional
     public ResenaResponseDTO actualizarResena(Integer resenaId, ResenaRequestDTO resenaRequestDTO) {
         Resena resena = obtenerResenaPorIdInterno(resenaId);
@@ -60,7 +58,6 @@ public class ResenaService {
         return resenaMapper.convertToDTO(resenaActualizada);
     }
 
-    // Obtener todas las reseñas
     @Transactional(readOnly = true)
     public List<ResenaResponseDTO> obtenerTodasLasResenas() {
         List<Resena> resenas = resenaRepository.findAll();
@@ -69,7 +66,6 @@ public class ResenaService {
                 .collect(Collectors.toList());
     }
 
-    // Obtener reseñas por evento
     @Transactional(readOnly = true)
     public List<ResenaResponseDTO> obtenerResenasPorEvento(Integer eventId) {
         List<Resena> resenas = resenaRepository.findByEvento_Id(eventId);
@@ -78,7 +74,6 @@ public class ResenaService {
                 .collect(Collectors.toList());
     }
 
-    // Obtener reseñas por usuario
     @Transactional(readOnly = true)
     public List<ResenaResponseDTO> obtenerResenasPorUsuario(Integer userId) {
         List<Resena> resenas = resenaRepository.findByUsuario_Id(userId);
@@ -87,21 +82,18 @@ public class ResenaService {
                 .collect(Collectors.toList());
     }
 
-    // Obtener una reseña por ID
     @Transactional(readOnly = true)
     public ResenaResponseDTO obtenerResenaPorId(Integer resenaId) {
         Resena resena = obtenerResenaPorIdInterno(resenaId);
         return resenaMapper.convertToDTO(resena);
     }
 
-    // Eliminar una reseña por ID
     @Transactional
     public void eliminarResena(Integer resenaId) {
         Resena resena = obtenerResenaPorIdInterno(resenaId);
         resenaRepository.delete(resena);
     }
 
-    // Cambiar el estado de una reseña (Aprobada, Rechazada, Pendiente)
     @Transactional
     public ResenaResponseDTO cambiarEstadoResena(Integer resenaId, EstadoResena nuevoEstado) {
         Resena resena = obtenerResenaPorIdInterno(resenaId);
@@ -110,8 +102,6 @@ public class ResenaService {
         Resena resenaActualizada = resenaRepository.save(resena);
         return resenaMapper.convertToDTO(resenaActualizada);
     }
-
-    // Métodos auxiliares para obtener entidades
 
     private Resena obtenerResenaPorIdInterno(Integer resenaId) {
         return resenaRepository.findById(resenaId)

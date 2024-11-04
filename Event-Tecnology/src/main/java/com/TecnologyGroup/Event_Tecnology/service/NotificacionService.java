@@ -21,7 +21,6 @@ public class NotificacionService {
     private final NotificacionRepository notificacionRepository;
     private final NotificacionMapper notificacionMapper;
 
-    // Crear una nueva notificación
     @Transactional
     public NotificacionResponseDTO crearNotificacion(NotificacionRequestDTO notificacionRequestDTO) {
         Notificacion notificacion = notificacionMapper.convertToEntity(notificacionRequestDTO);
@@ -29,7 +28,6 @@ public class NotificacionService {
         return notificacionMapper.convertToDTO(nuevaNotificacion);
     }
 
-    // Obtener todas las notificaciones
     @Transactional(readOnly = true)
     public List<NotificacionResponseDTO> obtenerTodasLasNotificaciones() {
         List<Notificacion> notificaciones = notificacionRepository.findAll();
@@ -38,7 +36,6 @@ public class NotificacionService {
                 .collect(Collectors.toList());
     }
 
-    // Obtener notificaciones por usuario
     @Transactional(readOnly = true)
     public List<NotificacionResponseDTO> obtenerNotificacionesPorUsuario(Integer userId) {
         List<Notificacion> notificaciones = notificacionRepository.findByUsuario_Id(userId);
@@ -47,7 +44,6 @@ public class NotificacionService {
                 .collect(Collectors.toList());
     }
 
-    // Obtener notificaciones por evento
     @Transactional(readOnly = true)
     public List<NotificacionResponseDTO> obtenerNotificacionesPorEvento(Integer eventId) {
         List<Notificacion> notificaciones = notificacionRepository.findByEvento_Id(eventId);
@@ -56,21 +52,18 @@ public class NotificacionService {
                 .collect(Collectors.toList());
     }
 
-    // Obtener una notificación por ID
     @Transactional(readOnly = true)
     public NotificacionResponseDTO obtenerNotificacionPorId(Integer notificacionId) {
         Notificacion notificacion = obtenerNotificacionPorIdInterno(notificacionId);
         return notificacionMapper.convertToDTO(notificacion);
     }
 
-    // Eliminar una notificación por ID
     @Transactional
     public void eliminarNotificacion(Integer notificacionId) {
         Notificacion notificacion = obtenerNotificacionPorIdInterno(notificacionId);
         notificacionRepository.delete(notificacion);
     }
 
-    // Cambiar el estado de una notificación
     @Transactional
     public NotificacionResponseDTO cambiarEstadoNotificacion(Integer notificacionId, EstadoNotificacion nuevoEstado) {
         Notificacion notificacion = obtenerNotificacionPorIdInterno(notificacionId);
@@ -79,7 +72,6 @@ public class NotificacionService {
         return notificacionMapper.convertToDTO(notificacionActualizada);
     }
 
-    // Método auxiliar para obtener una notificación
     private Notificacion obtenerNotificacionPorIdInterno(Integer notificacionId) {
         return notificacionRepository.findById(notificacionId)
                 .orElseThrow(() -> new NotificacionNotFoundException("Notificación no encontrada con el ID: " + notificacionId));

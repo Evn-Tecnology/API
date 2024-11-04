@@ -32,6 +32,5 @@ public class EventResponseDTO {
     private BigDecimal precio;
     private TipoEvento tipoEvento;
 
-    // Incluye datos adicionales como organizador y coorganizadores
     private String organizadorPrincipal;
 }

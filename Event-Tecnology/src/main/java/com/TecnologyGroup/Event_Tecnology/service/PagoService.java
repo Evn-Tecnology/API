@@ -30,7 +30,6 @@ public class PagoService {
     private final InscripcionRepository inscripcionRepository;
     private final PagoMapper pagoMapper;
 
-    // Crear un nuevo pago
     @Transactional
     public PagoResponseDTO crearPago(PagoRequestDTO pagoRequestDTO) {
         User usuario = obtenerUsuarioPorId(pagoRequestDTO.getUserId());
@@ -47,7 +46,6 @@ public class PagoService {
         return pagoMapper.convertToDTO(nuevoPago);
     }
 
-    // Obtener todos los pagos
     @Transactional(readOnly = true)
     public List<PagoResponseDTO> obtenerTodosLosPagos() {
         List<Pago> pagos = pagoRepository.findAll();
@@ -56,7 +54,6 @@ public class PagoService {
                 .collect(Collectors.toList());
     }
 
-    // Obtener pagos por usuario
     @Transactional(readOnly = true)
     public List<PagoResponseDTO> obtenerPagosPorUsuario(Integer userId) {
         List<Pago> pagos = pagoRepository.findByUsuario_Id(userId);
@@ -65,7 +62,6 @@ public class PagoService {
                 .collect(Collectors.toList());
     }
 
-    // Obtener pagos por evento
     @Transactional(readOnly = true)
     public List<PagoResponseDTO> obtenerPagosPorEvento(Integer eventId) {
         List<Pago> pagos = pagoRepository.findByEvento_Id(eventId);
@@ -74,7 +70,6 @@ public class PagoService {
                 .collect(Collectors.toList());
     }
 
-    // Obtener pagos por inscripción
     @Transactional(readOnly = true)
     public List<PagoResponseDTO> obtenerPagosPorInscripcion(Integer inscripcionId) {
         List<Pago> pagos = pagoRepository.findByInscripcion_Id(inscripcionId);
@@ -83,7 +78,6 @@ public class PagoService {
                 .collect(Collectors.toList());
     }
 
-    // Obtener pagos por ID
     @Transactional(readOnly = true)
     public PagoResponseDTO obtenerPagoPorId(Integer pagoId) {
         Pago pago = pagoRepository.findById(pagoId)
@@ -91,7 +85,6 @@ public class PagoService {
         return pagoMapper.convertToDTO(pago);
     }
 
-    // Eliminar un pago por ID
     @Transactional
     public void eliminarPago(Integer pagoId) {
         Pago pago = pagoRepository.findById(pagoId)
@@ -99,7 +92,6 @@ public class PagoService {
         pagoRepository.delete(pago);
     }
 
-    // Obtener pagos por rango de fechas
     @Transactional(readOnly = true)
     public List<PagoResponseDTO> obtenerPagosPorFecha(LocalDateTime fechaInicio, LocalDateTime fechaFin) {
         List<Pago> pagos = pagoRepository.findPagosByFechaPagoBetween(fechaInicio, fechaFin);
@@ -108,7 +100,6 @@ public class PagoService {
                 .collect(Collectors.toList());
     }
 
-    // Obtener pagos por método de pago
     @Transactional(readOnly = true)
     public List<PagoResponseDTO> obtenerPagosPorMetodoPago(String metodoPago) {
         List<Pago> pagos = pagoRepository.findByMetodoPago(metodoPago);
@@ -116,8 +107,6 @@ public class PagoService {
                 .map(pagoMapper::convertToDTO)
                 .collect(Collectors.toList());
     }
-
-    // Métodos auxiliares para obtener entidades
 
     private User obtenerUsuarioPorId(Integer userId) {
         return userRepository.findById(userId)
