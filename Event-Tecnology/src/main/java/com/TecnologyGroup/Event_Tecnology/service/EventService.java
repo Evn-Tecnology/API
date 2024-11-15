@@ -1,6 +1,7 @@
 package com.TecnologyGroup.Event_Tecnology.service;
 
 import com.TecnologyGroup.Event_Tecnology.exception.EventNotFoundException;
+import com.TecnologyGroup.Event_Tecnology.exception.UserNotFoundException;
 import com.TecnologyGroup.Event_Tecnology.mapper.EventMapper;
 import com.TecnologyGroup.Event_Tecnology.mapper.NotificacionMapper;
 import com.TecnologyGroup.Event_Tecnology.model.dto.EventRequestDTO;
@@ -10,12 +11,14 @@ import com.TecnologyGroup.Event_Tecnology.model.entity.Event;
 import com.TecnologyGroup.Event_Tecnology.model.entity.Inscripcion;
 import com.TecnologyGroup.Event_Tecnology.model.entity.Notificacion;
 import com.TecnologyGroup.Event_Tecnology.model.entity.User;
+import com.TecnologyGroup.Event_Tecnology.model.enums.CategoriaEvento;
 import com.TecnologyGroup.Event_Tecnology.model.enums.EstadoEvento;
 import com.TecnologyGroup.Event_Tecnology.model.enums.EstadoNotificacion;
 import com.TecnologyGroup.Event_Tecnology.model.enums.TipoNotificacion;
 import com.TecnologyGroup.Event_Tecnology.repository.EventRepository;
 import com.TecnologyGroup.Event_Tecnology.repository.InscripcionRepository;
 import com.TecnologyGroup.Event_Tecnology.repository.NotificacionRepository;
+import com.TecnologyGroup.Event_Tecnology.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,16 +35,40 @@ public class EventService {
     private final EventRepository eventRepository;
     private final InscripcionRepository inscripcionRepository;
     private final NotificacionRepository notificacionRepository;
+    private final UserRepository userRepository;
     private final EventMapper eventMapper;
     private final NotificacionMapper notificacionMapper;
 
     @Transactional
     public EventResponseDTO crearEvento(EventRequestDTO eventRequestDTO) {
+        // Validación del precio si el evento es pagado
+        if (eventRequestDTO.isEsPagado() && eventRequestDTO.getPrecio() == null) {
+            throw new IllegalArgumentException("El precio debe especificarse para eventos pagados");
+        }
+
+        // Conversión de categoría de string a enum
+        CategoriaEvento categoriaEvento;
+        try {
+            categoriaEvento = CategoriaEvento.valueOf(eventRequestDTO.getCategoriaEvento().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Categoría de evento inválida: " + eventRequestDTO.getCategoriaEvento());
+        }
+
+        // Buscar el organizador por ID
+        User organizador = userRepository.findById(eventRequestDTO.getOrganizadorId())
+                .orElseThrow(() -> new UserNotFoundException("Organizador no encontrado con el ID: " + eventRequestDTO.getOrganizadorId()));
+
+        // Mapeo de DTO a entidad
         Event event = eventMapper.convertToEntity(eventRequestDTO);
+        event.setCategoriaEvento(categoriaEvento);  // Asignar la categoría convertida
         event.setEstado(EstadoEvento.PLANIFICADO);  // Estado inicial del evento
+        event.setOrganizadorPrincipal(organizador); // Asignar el organizador
+
         Event nuevoEvento = eventRepository.save(event);
         return eventMapper.convertToDTO(nuevoEvento);
     }
+
+
 
     @Transactional
     public EventResponseDTO actualizarEvento(Integer eventId, EventRequestDTO eventRequestDTO) {

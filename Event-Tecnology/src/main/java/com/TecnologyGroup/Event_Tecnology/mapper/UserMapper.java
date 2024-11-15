@@ -1,6 +1,8 @@
 package com.TecnologyGroup.Event_Tecnology.mapper;
 
-import com.TecnologyGroup.Event_Tecnology.model.dto.UserRequestDTO;
+import com.TecnologyGroup.Event_Tecnology.model.dto.AuthResponseDTO;
+import com.TecnologyGroup.Event_Tecnology.model.dto.LoginDTO;
+import com.TecnologyGroup.Event_Tecnology.model.dto.UserRegistrationDTO;
 import com.TecnologyGroup.Event_Tecnology.model.dto.UserResponseDTO;
 import com.TecnologyGroup.Event_Tecnology.model.entity.User;
 import lombok.AllArgsConstructor;
@@ -16,25 +18,39 @@ public class UserMapper {
     private final ModelMapper modelMapper;
     private final DetailUserMapper detailUserMapper;
 
-    public User convertToEntity(UserRequestDTO userRequestDTO) {
-        return modelMapper.map(userRequestDTO, User.class);
+    public User toUserEntity(UserRegistrationDTO registrationDTO) {
+        return modelMapper.map(registrationDTO, User.class);
     }
 
-    public UserResponseDTO convertToDTO(User user) {
-        UserResponseDTO dto = modelMapper.map(user, UserResponseDTO.class);
+    public UserResponseDTO toUserProfileDTO(User user) {
+        UserResponseDTO userProfileDTO = modelMapper.map(user, UserResponseDTO.class);
 
         if (user.getUserDetail() != null) {
-            dto.setDetailUser(detailUserMapper.convertToDTO(user.getUserDetail()));
+            userProfileDTO.setDetailUser(detailUserMapper.convertToDTO(user.getUserDetail()));
         }
 
-        dto.setEstado(user.getEstado().toString());
+        userProfileDTO.setEstado(user.getEstado().toString());
 
-        return dto;
+        return userProfileDTO;
+    }
+
+    public User toUserEntity(LoginDTO loginDTO) {
+        return modelMapper.map(loginDTO, User.class);
+    }
+
+    public AuthResponseDTO toAuthResponseDTO(User user, String token) {
+        AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+        authResponseDTO.setId(user.getId());
+        authResponseDTO.setToken(token);
+        authResponseDTO.setFirstName(user.getFirstName());
+        authResponseDTO.setLastName(user.getLastName());
+        authResponseDTO.setRole(user.getRol().getNombreRol());
+        return authResponseDTO;
     }
 
     public List<UserResponseDTO> convertToListDTO(List<User> users) {
         return users.stream()
-                .map(this::convertToDTO)
+                .map(this::toUserProfileDTO)
                 .toList();
     }
 }

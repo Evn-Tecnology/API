@@ -1,6 +1,6 @@
 package com.TecnologyGroup.Event_Tecnology.controller;
 
-import com.TecnologyGroup.Event_Tecnology.model.dto.UserRequestDTO;
+import com.TecnologyGroup.Event_Tecnology.model.dto.UserRegistrationDTO;
 import com.TecnologyGroup.Event_Tecnology.model.dto.UserResponseDTO;
 import com.TecnologyGroup.Event_Tecnology.service.UserService;
 import jakarta.validation.Valid;
@@ -43,14 +43,14 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO userRequestDTO) {
-        UserResponseDTO createdUser = userService.createUser(userRequestDTO);
+    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRegistrationDTO userRegistrationDTO) {
+        UserResponseDTO createdUser = userService.createUser(userRegistrationDTO);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Integer id, @Valid @RequestBody UserRequestDTO userRequestDTO) {
-        UserResponseDTO user = userService.updateUser(id, userRequestDTO);
+    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Integer id, @Valid @RequestBody UserRegistrationDTO userRegistrationDTO) {
+        UserResponseDTO user = userService.updateUser(id, userRegistrationDTO);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 

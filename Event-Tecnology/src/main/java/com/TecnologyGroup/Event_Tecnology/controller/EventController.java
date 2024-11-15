@@ -2,18 +2,21 @@ package com.TecnologyGroup.Event_Tecnology.controller;
 
 import com.TecnologyGroup.Event_Tecnology.model.dto.EventRequestDTO;
 import com.TecnologyGroup.Event_Tecnology.model.dto.EventResponseDTO;
+import com.TecnologyGroup.Event_Tecnology.model.enums.CategoriaEvento;
 import com.TecnologyGroup.Event_Tecnology.model.enums.EstadoEvento;
 import com.TecnologyGroup.Event_Tecnology.service.EventService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/eventos")
+@RequestMapping("/eventos")
 @AllArgsConstructor
 public class EventController {
 
@@ -86,5 +89,11 @@ public class EventController {
     public ResponseEntity<List<EventResponseDTO>> obtenerEventosPagados() {
         List<EventResponseDTO> eventos = eventService.obtenerEventosPagados();
         return new ResponseEntity<>(eventos, HttpStatus.OK);
+    }
+
+    @GetMapping("/categorias")
+    public ResponseEntity<List<CategoriaEvento>> getAllCategories() {
+        List<CategoriaEvento> categorias = Arrays.asList(CategoriaEvento.values());
+        return new ResponseEntity<>(categorias, HttpStatus.OK);
     }
 }

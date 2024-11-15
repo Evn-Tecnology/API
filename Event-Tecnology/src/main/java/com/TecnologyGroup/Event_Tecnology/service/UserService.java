@@ -5,16 +5,23 @@ import com.TecnologyGroup.Event_Tecnology.exception.UserAlreadyExistsException;
 import com.TecnologyGroup.Event_Tecnology.exception.UserDeletedException;
 import com.TecnologyGroup.Event_Tecnology.exception.UserNotFoundException;
 import com.TecnologyGroup.Event_Tecnology.mapper.UserMapper;
-import com.TecnologyGroup.Event_Tecnology.model.dto.UserRequestDTO;
+import com.TecnologyGroup.Event_Tecnology.model.dto.AuthResponseDTO;
+import com.TecnologyGroup.Event_Tecnology.model.dto.LoginDTO;
+import com.TecnologyGroup.Event_Tecnology.model.dto.UserRegistrationDTO;
 import com.TecnologyGroup.Event_Tecnology.model.dto.UserResponseDTO;
 import com.TecnologyGroup.Event_Tecnology.model.entity.Rol;
 import com.TecnologyGroup.Event_Tecnology.model.entity.User;
 import com.TecnologyGroup.Event_Tecnology.model.enums.EstadoUsuario;
 import com.TecnologyGroup.Event_Tecnology.repository.RolRepository;
 import com.TecnologyGroup.Event_Tecnology.repository.UserRepository;
+import com.TecnologyGroup.Event_Tecnology.security.TokenProvider;
+import com.TecnologyGroup.Event_Tecnology.security.UserPrincipal;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +36,27 @@ public class UserService {
     private final UserRepository userRepository;
     private final RolRepository rolRepository;
     private final UserMapper userMapper;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
+
+    private final AuthenticationManager authenticationManager;
+    private final TokenProvider tokenProvider;
+
+    public AuthResponseDTO login(LoginDTO loginDTO) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword())
+        );
+
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        User user = userPrincipal.getUser();
+
+        boolean isAdmin = user.getRol().getNombreRol().equals("ADMIN");
+
+        String token=tokenProvider.createAccessToken(authentication);
+
+        AuthResponseDTO responseDTO = userMapper.toAuthResponseDTO(user, token);
+
+        return responseDTO;
+    }
 
     @Transactional(readOnly = true)
     public List<UserResponseDTO> getAllUsers() {
@@ -52,46 +79,48 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserResponseDTO getUserById(Integer id) {
         User user = findActiveUserById(id);
-        return userMapper.convertToDTO(user);
+        return userMapper.toUserProfileDTO(user);
     }
 
     @Transactional
-    public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
-        Optional<User> existingUser = userRepository.findAnyUserByEmail(userRequestDTO.getEmail());
+    public UserResponseDTO createUser(UserRegistrationDTO userRegistrationDTO) {
+        Optional<User> existingUser = userRepository.findAnyUserByEmail(userRegistrationDTO.getEmail());
 
         if (existingUser.isPresent()) {
             User user = existingUser.get();
             if (user.getEstado() == EstadoUsuario.ELIMINADO) {
                 throw new UserDeletedException("El usuario con este correo está eliminado. Puedes reactivar tu cuenta.");
             } else {
-                throw new UserAlreadyExistsException("Ya existe un usuario con el correo: " + userRequestDTO.getEmail());
+                throw new UserAlreadyExistsException("Ya existe un usuario con el correo: " + userRegistrationDTO.getEmail());
             }
         }
-
-        User user = userMapper.convertToEntity(userRequestDTO);
         Rol defaultRole = rolRepository.findByNombreRol("UsuarioNv")
-                .orElseThrow(() -> new EntityNotFoundException("El rol 'UsuarioNv' no fue encontrado"));
-        String encryptedPassword = passwordEncoder.encode(userRequestDTO.getPassword());
-        user.setUserPassword(encryptedPassword);
+                .orElseThrow(() -> new EntityNotFoundException("El rol no fue encontrado"));
+        userRegistrationDTO.setPassword(passwordEncoder.encode(userRegistrationDTO.getPassword()));
+
+        User user = userMapper.toUserEntity(userRegistrationDTO);
+        user.setFirstName(userRegistrationDTO.getFirstName());
+        user.setLastName(userRegistrationDTO.getLastName());
         user.setRol(defaultRole);
         user.setCreateAt(LocalDate.now());
         user.setEstado(EstadoUsuario.ACTIVO);;
 
-        userRepository.save(user);
-        return userMapper.convertToDTO(user);
+        User savedUser = userRepository.save(user);
+
+        return userMapper.toUserProfileDTO(savedUser);
     }
 
     @Transactional
-    public UserResponseDTO updateUser(Integer id, UserRequestDTO userRequestDTO) {
+    public UserResponseDTO updateUser(Integer id, UserRegistrationDTO userRegistrationDTO) {
         User user = findActiveUserById(id);
 
-        user.setUserNombre(userRequestDTO.getNombre());
-        user.setUserApellido(userRequestDTO.getApellido());
-        user.setUserTelefono(userRequestDTO.getTelefono());
+        user.setFirstName(userRegistrationDTO.getFirstName());
+        user.setLastName(userRegistrationDTO.getLastName());
+        user.setUserTelefono(userRegistrationDTO.getTelefono());
         user.setUpdateAt(LocalDate.now());
 
         user = userRepository.save(user);
-        return userMapper.convertToDTO(user);
+        return userMapper.toUserProfileDTO(user);
     }
 
     @Transactional
@@ -120,7 +149,7 @@ public class UserService {
         user.setDeletedAt(null);
         userRepository.save(user);
 
-        return userMapper.convertToDTO(user);
+        return userMapper.toUserProfileDTO(user);
     }
 
     @Transactional(readOnly = true)
@@ -142,7 +171,7 @@ public class UserService {
     }
 
     @Transactional
-    public void recoverPassword(Integer id, String currentPassword, String newPassword) {
+    public void updatePassword(Integer id, String currentPassword, String newPassword) {
         User user = findActiveUserById(id);
 
         if (!passwordEncoder.matches(currentPassword, user.getUserPassword())) {

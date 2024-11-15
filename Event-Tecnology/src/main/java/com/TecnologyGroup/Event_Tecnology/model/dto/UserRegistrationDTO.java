@@ -11,14 +11,14 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRequestDTO {
+public class UserRegistrationDTO {
     @NotBlank(message = "El nombre no puede ser vacío")
     @Size(min = 2, message = "El nombre debe tener al menos 2 caracteres")
-    private String nombre;
+    private String firstName;
 
     @NotBlank(message = "El apellido no puede ser vacío")
     @Size(min = 2, message = "El apellido debe tener al menos 2 caracteres")
-    private String apellido;
+    private String lastName;
 
     @NotBlank(message = "El correo electrónico no puede ser vacío")
     @Email(message = "El correo debe ser válido")

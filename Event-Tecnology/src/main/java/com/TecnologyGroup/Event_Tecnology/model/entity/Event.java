@@ -49,7 +49,7 @@ public class Event {
     private LocalTime eventHora;
 
     @Column(name = "event_fecha_fin", nullable = true)
-    private LocalDateTime eventFechaFin;
+    private LocalDate eventFechaFin;
 
     @NotNull
     @Column(name = "event_lugar", nullable = false)

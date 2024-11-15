@@ -17,7 +17,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class EventResponseDTO {
 
-    private Integer id;
+    private Integer idOrg;
     private String eventNombre;
     private CategoriaEvento categoriaEvento;
     private String eventDescripcion;

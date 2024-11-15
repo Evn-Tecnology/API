@@ -20,10 +20,10 @@ public class User {
     private Integer id;
 
     @Column(name = "user_nombre", nullable = false)
-    private String userNombre;
+    private String firstName;
 
     @Column(name = "user_apellido", nullable = false)
-    private String userApellido;
+    private String lastName;
 
     @Column(name = "user_email", nullable = false, unique = true, updatable = false)
     private String userEmail;

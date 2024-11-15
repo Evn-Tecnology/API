@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserResponseDTO {
     private Integer id;
-    private String nombre;
-    private String apellido;
+    private String firstName;
+    private String lastName;
     private String email;
     private String telefono;
     private String estado;

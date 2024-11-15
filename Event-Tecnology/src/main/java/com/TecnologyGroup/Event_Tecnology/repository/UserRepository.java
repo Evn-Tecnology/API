@@ -29,4 +29,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("SELECT u FROM User u WHERE u.estado = 'ELIMINADO'")
     List<User> findAllDeletedUsers();
 
+    boolean existsByUserEmail(String email);
+
+    boolean existsByFirstNameAndLastName(String userNombre, String userApellido);
 }
